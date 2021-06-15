@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu,Tooltip} from 'antd';
+import { Modal,Menu,Tooltip} from 'antd';
 import { useRouteMatch,useHistory } from "react-router-dom";
 import { gql, useMutation } from '@apollo/client';
 
@@ -43,15 +43,26 @@ function MenuComponent() {
                     Estado de cuentas
                 </Menu.Item>
                   <Menu.Item onClick={( ) => {
-                    logout({variables : { id : parseInt(id) }}).then(
-                      async ({data})=>{
-                        await localStorage.clear();
-                         window.location.href =  await "/login";
-                      },
-                      error=>{
-                        console.log(error);
-                      }
-                    )
+                      Modal.confirm({
+                        content: "¿Esta seguro que desea salir del sistema?.",
+                        okText:"Si",
+                        cancelText :"No",
+                        onOk() {
+                          logout({variables : { id : parseInt(id) }}).then(
+                            async ({data})=>{
+                              await localStorage.clear();
+                               window.location.href =  await "/login";
+                            },
+                            error=>{
+                              console.log(error);
+                            }
+                          )
+                        },
+                        onCancel() {
+                          console.log('Cancel');
+                        },
+                      });
+                    
                   }}  
                     key={`logout`}>
                     Salir
